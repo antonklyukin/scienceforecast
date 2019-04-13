@@ -8,6 +8,8 @@ import pickle
 
 import collocator
 
+SRC_PATH = 'journals'
+
 
 def process_json(file_path_string):
     """
@@ -78,6 +80,15 @@ def write_to_db():
     TODO. Function to write journal data to database. For example, PostgreSQL.
     """
     pass
+
+
+for root, subdirs, files in os.walk(SRC_PATH):
+
+    for file in files:
+        if file.endswith(".json"):
+            existing_json_file = os.path.join(root, file)
+            # json_splitted_abs_path = existing_json_file.split(os.sep)
+            process_json(existing_json_file)
 
 
 # src_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src',
