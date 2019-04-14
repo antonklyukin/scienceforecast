@@ -5,7 +5,7 @@ import subprocess
 from requests.exceptions import ConnectionError
 import requests_html as rh
 
-import support_func as support
+from . import support_func as support
 
 VPN_STATUS = 'expressvpn status'
 VPN_LIST = 'expressvpn list all'

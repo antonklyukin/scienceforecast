@@ -1,4 +1,5 @@
 import json
+import os
 
 
 
@@ -84,7 +85,8 @@ def give_header():
 @memorize
 def init_headers():
     output_list = []
-    with open('headers', 'r') as file:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'headers')
+    with open(path, 'r') as file:
         for line in file:
             output_list.append({'user-agent': line.replace('\n', '')})
 
