@@ -114,7 +114,7 @@ def initilization():
 def main():    
     initilization()
     load_status = {'journals': True, 'issues': True, 'articles': True}
-    filepath = os.path.join(os.getcwd(), 'statement', 'subdomains')
+    filepath = os.path.join(os.getcwd(), 'parserfolder', 'statement', 'subdomains')
     if os.path.exists(filepath):  # Загрузка  по поддоменам
         domain_dict = load.load_file(filepath)
     else:
