@@ -58,14 +58,17 @@ def write_pkl(journal_data):
 
     run_path = os.path.dirname(os.path.abspath(__file__))
 
-    pkl_dir = os.path.join(run_path, 'pkl', primary_domain, domain, subdomain)
+    pkl_dir = os.path.join(run_path, 'pkl', primary_domain, domain,
+                           subdomain[0])
+    print(pkl_dir)
     pkl_file_path = os.path.join(run_path, 'pkl', primary_domain, domain,
-        subdomain, file_name)
+                                 subdomain[0], file_name)
+    print(pkl_file_path)
 
     if not os.path.exists(pkl_dir):
-        os.mkdir(pkl_dir)
+        os.makedirs(pkl_dir)
 
-    if not os.path.isfile(pkl_file_path):
+    if not os.path.exists(pkl_file_path):
 
         print('Writing file: ' + pkl_file_path)
 
