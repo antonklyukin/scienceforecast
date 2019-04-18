@@ -90,8 +90,10 @@ def get_top_ten_from_frame(frame):
 
     collocations = frame['collocation'].unique()
 
-
-
+    for collocation in collocations:
+        col_frame = frame[collocation]
+        print('---')
+        print(col_frame)
 
 
 words_2015 = create_top_journal_list_by_year('2015')
