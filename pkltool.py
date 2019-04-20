@@ -95,20 +95,21 @@ def get_top_ten_from_frame(frame):
         print('---')
         print(col_frame)
 
+if __name__ == '__main__':
 
-words_2015 = create_top_journal_list_by_year('2015')
-words_2016 = create_top_journal_list_by_year('2016')
-words_2017 = create_top_journal_list_by_year('2017')
-words_2018 = create_top_journal_list_by_year('2018')
+    words_2015 = create_top_journal_list_by_year('2015')
+    words_2016 = create_top_journal_list_by_year('2016')
+    words_2017 = create_top_journal_list_by_year('2017')
+    words_2018 = create_top_journal_list_by_year('2018')
 
 
-result_frame = pd.concat([words_2015, words_2016, words_2017, words_2018])
+    result_frame = pd.concat([words_2015, words_2016, words_2017, words_2018])
 
-# result_frame.to_excel("output.xlsx", sheet_name='Sheet_name_1')
+    # result_frame.to_excel("output.xlsx", sheet_name='Sheet_name_1')
 
-normalized_frame = normalize_range_data_frame(result_frame).sort_values(
-    by=['collocation', 'year'])
+    normalized_frame = normalize_range_data_frame(result_frame).sort_values(
+        by=['collocation', 'year'])
 
-get_top_ten_from_frame(normalized_frame)
+    get_top_ten_from_frame(normalized_frame)
 
 

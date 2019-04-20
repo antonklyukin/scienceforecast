@@ -5,9 +5,9 @@
 import os
 import json
 import pickle
-
+import nltk
 import collocator
-
+from multiprocessing import Pool
 SRC_PATH = 'journals'
 
 
@@ -54,7 +54,7 @@ def write_pkl(journal_data):
     domain = journal_data['domain']
     subdomain = journal_data['subdomain']
 
-    file_name = journal_data['journal name'].replace(' ', '') + '.pkl'
+    file_name = journal_data['journal name'].replace(' ', '').replace('/',' ') + '.pkl'
 
     run_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -84,14 +84,41 @@ def write_to_db():
     """
     pass
 
+def is_serialized(file):
+    """
+    Проверка, сериализован ли уже журнал
+    """
+    walking_path = os.path.join(os.getcwd(), 'pkl')
+    for root, _, files in os.walk(walking_path):
+        if file in files:
+            return True
 
-for root, subdirs, files in os.walk(SRC_PATH):
+    return False
 
-    for file in files:
-        if file.endswith(".json"):
-            existing_json_file = os.path.join(root, file)
-            # json_splitted_abs_path = existing_json_file.split(os.sep)
-            process_json(existing_json_file)
+def nltk_init():
+    """
+    Функция для скачивания необходимых компонентов
+    """
+    nltk.download('punkt')
+    nltk.download('wordnet')
+    nltk.download('averaged_perceptron_tagger')
+
+if __name__ == '__main__':
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    walking_path = os.path.join(os.getcwd(), 'journals')
+    # nltk_init()
+    for root, subdirs, files in os.walk(walking_path):
+        files_list = []
+        for file in files:
+            if file.endswith(".json"):
+                if is_serialized(file):
+                    continue
+                files_list.append(os.path.join(os.getcwd(), root, file))
+        # existing_json_file = os.path.join(root, file)
+        processing_pool = Pool(8)
+                # json_splitted_abs_path = existing_json_file.split(os.sep)
+        processing_pool.map(process_json, files_list)
+                # process_json(existing_json_file)
 
 
 # src_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src',

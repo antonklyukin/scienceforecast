@@ -4,7 +4,6 @@ bs4==0.0.1
 certifi==2019.3.9
 chardet==3.0.4
 cssselect==1.0.3
-expressvpn-python==1.0
 fake-useragent==0.1.11
 idna==2.8
 langdetect==1.0.7
