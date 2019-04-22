@@ -13,5 +13,6 @@ def commit(cur, connector):
     """
     Завершение сеанса, подтверждение изменений
     """
-    #cur.close()
+    cur.close()
     connector.commit()
+    connector.close()
