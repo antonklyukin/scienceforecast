@@ -3,14 +3,14 @@
 # -*- coding:utf-8 -*-
 
 
-import joblib
+import pickle
 import re
 import pandas as pd
 
 
-PKL_FILE_PATH = """/home/antony/my-files/Yandex.Disk/projects/scienceforecast\
-/pkl/Life Sciences/Biochemistry, Genetics and Molecular Biology/Cancer\
- Research/BiochemicalandBiophysicalResearchCommunications.pkl"""
+PKL_FILE_PATH = """/home/user035/my-files/Yandex.Disk/projects/scienceforecast\
+/pkl/Physical Sciences and Engineering/Chemical Engineering/Bioengineering/\
+ActaBiomaterialia.pkl"""
 
 
 def create_top_journal_list_by_year(year):
@@ -20,7 +20,7 @@ def create_top_journal_list_by_year(year):
     trigrams_list = []
 
     with open(PKL_FILE_PATH, 'rb') as file:
-        data = joblib.load(file)
+        data = pickle.load(file)
 
     for article in data['articles']:
         result = re.match(r'^(\d\d).*(\d\d\d\d)', article['publication date'])
@@ -42,7 +42,6 @@ def create_top_journal_list_by_year(year):
     bigrams_uniq_list = set(flat_bigrams_list)
     trigrams_uniq_list = set(flat_trigrams_list)
 
-
     # Lists of collocation lists ([collocation, number])
     bigrams_counted = []
     trigrams_counted = []
@@ -57,9 +56,8 @@ def create_top_journal_list_by_year(year):
     trigrams_frame = pd.DataFrame(trigrams_counted)
 
     frames = bigrams_frame.nlargest(5, 1).append(trigrams_frame.nlargest(5, 1))
-    frames.reset_index(inplace=True)
+
     frames['year'] = year
-    del frames['index']
     frames.columns = ['collocation', 'number', 'year']
 
     return frames
@@ -88,48 +86,29 @@ def normalize_range_data_frame(frame):
     return frame
 
 
-def get_top_from_frame(frame, number_of_collocations=7):
+def get_top_ten_from_frame(frame):
 
-    number_of_years_in_frame = len(frame['year'].unique())
+    collocations = frame['collocation'].unique()
 
-    uniq_collocations_in_frame = frame['collocation'].unique()
-
-    if (len(uniq_collocations_in_frame) > number_of_collocations):
-        drop_rare_collocations(frame)
-
-    return frame
+    for collocation in collocations:
+        col_frame = frame[collocation]
+        print('---')
+        print(col_frame)
 
 
-def drop_rare_collocations(frame, number_of_collocations=7):
-    number_of_years_in_frame = len(frame['year'].unique())
-    uniq_collocations_in_frame = frame['collocation'].unique()
-    number_of_uniq_collocations = len(uniq_collocations_in_frame)
-    zero_num = number_of_years_in_frame - 1
-    while (number_of_uniq_collocations > number_of_collocations) and (zero_num != 0):
-        for collocation in uniq_collocations_in_frame:
-            slice_frame = frame[frame['collocation'] == collocation]
-            if number_of_uniq_collocations == number_of_collocations:
-                break
-            if (len(slice_frame[slice_frame['number'] == 0]) == zero_num):
-                # print(slice_frame)
-                frame.drop(frame.loc[frame['collocation'] == collocation].index, inplace=True)
-            uniq_collocations_in_frame = frame['collocation'].unique()
-            number_of_uniq_collocations = len(uniq_collocations_in_frame)
-        zero_num -= 1
-    
-    return frame
-
-year_list = []
-for year in range(2010, 2020):
-    year_list.append(create_top_journal_list_by_year(f'{year}'))
+words_2015 = create_top_journal_list_by_year('2015')
+words_2016 = create_top_journal_list_by_year('2016')
+words_2017 = create_top_journal_list_by_year('2017')
+words_2018 = create_top_journal_list_by_year('2018')
 
 
-result_frame = pd.concat(year_list)
+result_frame = pd.concat([words_2015, words_2016, words_2017, words_2018])
 
+# result_frame.to_excel("output.xlsx", sheet_name='Sheet_name_1')
 
 normalized_frame = normalize_range_data_frame(result_frame).sort_values(
     by=['collocation', 'year'])
 
+get_top_ten_from_frame(normalized_frame)
 
-print(drop_rare_collocations(normalized_frame, 7))
 
