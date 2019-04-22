@@ -127,8 +127,8 @@ for year in range(2010, 2020):
 result_frame = pd.concat(year_list)
 
 
-normalized_frame = normalize_range_data_frame(result_frame).sort_values(
-    by=['collocation', 'year'])
+    normalized_frame = normalize_range_data_frame(result_frame).sort_values(
+        by=['collocation', 'year'])
 
 
 print(drop_rare_collocations(normalized_frame, 7))
