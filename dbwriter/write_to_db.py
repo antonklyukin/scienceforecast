@@ -209,15 +209,18 @@ def main():
     walking_path = os.path.join(os.getcwd(), 'pkl')
     print('START')
     file_list = []
-    for root, _, files in os.walk(walking_path):        
+    i = 0
+    for root, _, files in os.walk(walking_path):
         if not files:
             continue
         for file in files:
+            file_list.append(file)
             file_path = os.path.join(os.getcwd(), root, file)
+            # print('Path:    ', file_path)
             (cur, connector) = connect.connect_to_db()
             write_to_db(file_path, cur, connector)
             connect.commit(cur, connector)
-
+    print(len(set(file_list)))
 
 
 if __name__ == '__main__':
