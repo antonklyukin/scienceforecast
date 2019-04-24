@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="/static/js/html5shiv.min.js"></script>
+      <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+    <script src="/static/js/Chart.min.js"></script>
+  </head>
+  <body>
+
+    <h1>Журнал "Biochemical and Biophysical Research Communications"</h1>
+    <h2>Рейтинг самых частотных словосочетаний в аннотациях статьях журнала за период с 2010 по 2013 гг.</h2>
+
+    <div class="col-md-5">
+      <canvas id="myChart" width="1600" height="900"></canvas>
+    </div>
+
+    <script type="text/javascript">
+      // Our labels along the x-axis
+      var years = ['2010','2011','2012','2013'];
+      // For drawing the lines
+      var word_01 = [0,35,29,26];
+      var word_02 = [35,26,40,33];
+      var word_03 = [0,19,28,21];
+      var word_04 = [21,21,31,31];
+      var word_05 = [33,51,60,55];
+      var word_06 = [26,29,34,38];
+      var word_07 = [0,34,47,46];
+
+      var ctx = document.getElementById("myChart");
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+              { 
+                data: word_01,
+                label: "DNA damage",
+                borderColor: "#1f77b4",
+                fill: false
+              },
+              { 
+                data: word_02,
+                label: "T cell",
+                borderColor: "#ff7f0e",
+                fill: false
+              },
+              { 
+                data: word_03,
+                label: "mesenchymal stem cell",
+                borderColor: "#2ca02c",
+                fill: false
+              },
+              { 
+                data: word_04,
+                label: "reactive oxygen specie",
+                borderColor: "#d62728",
+                fill: false
+              },
+              { 
+                data: word_05,
+                label: "reticulum ER",
+                borderColor: "#9467bd",
+                fill: false
+              },
+              { 
+                data: word_06,
+                label: "smooth muscle cell",
+                borderColor: "#8c564b",
+                fill: false
+              },
+              { 
+                data: word_07,
+                label: "specie ROS",
+                borderColor: "#e377c2",
+                fill: false
+              }
+
+          ]
+        }
+      });
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>

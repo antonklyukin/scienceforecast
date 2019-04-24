@@ -6,11 +6,18 @@
 import joblib
 import re
 import pandas as pd
+import os
 
 
-PKL_FILE_PATH = """/home/antony/my-files/Yandex.Disk/projects/scienceforecast\
-/pkl/Life Sciences/Biochemistry, Genetics and Molecular Biology/Cancer\
- Research/BiochemicalandBiophysicalResearchCommunications.pkl"""
+run_path = os.path.dirname(os.path.abspath(__file__))
+
+PKL_FILE_PATH = os.path.join(run_path, 'pkl', 'Life Sciences/Biochemistry, Genetics and Molecular Biology/Cancer\
+ Research/BiochemicalandBiophysicalResearchCommunications.pkl')
+
+
+# PKL_FILE_PATH = '/home/antony/my-files/Yandex.Disk/projects/scienceforecast\
+# /pkl/Life Sciences/Biochemistry, Genetics and Molecular Biology/Cancer\
+#  Research/BiochemicalandBiophysicalResearchCommunications.pkl'
 
 
 def create_top_journal_list_by_year(year):
@@ -41,7 +48,6 @@ def create_top_journal_list_by_year(year):
     # each found collocation
     bigrams_uniq_list = set(flat_bigrams_list)
     trigrams_uniq_list = set(flat_trigrams_list)
-
 
     # Lists of collocation lists ([collocation, number])
     bigrams_counted = []
@@ -116,18 +122,19 @@ def drop_rare_collocations(frame, number_of_collocations=7):
             uniq_collocations_in_frame = frame['collocation'].unique()
             number_of_uniq_collocations = len(uniq_collocations_in_frame)
         zero_num -= 1
-    
+
     return frame
 
+
 year_list = []
-for year in range(2010, 2020):
+for year in range(2010, 2014):
     year_list.append(create_top_journal_list_by_year(f'{year}'))
 
 
 result_frame = pd.concat(year_list)
 
 
-    normalized_frame = normalize_range_data_frame(result_frame).sort_values(
+normalized_frame = normalize_range_data_frame(result_frame).sort_values(
         by=['collocation', 'year'])
 
 
