@@ -25,7 +25,8 @@ def primary_select_collocations(name):
                        )
                      )
                 """, (name, ))
-    
+
+
     output_query = cur.fetchall()
     cur.close()
     connector.close()
@@ -37,8 +38,9 @@ def primary_select_collocations(name):
 
     return output
 
+
 def domain_select_collocations(name):
-    connector= psycopg2.connect(DB_SETTINGS)
+    connector = psycopg2.connect(DB_SETTINGS)
     cur = connector.cursor()
     cur.execute("""SELECT collocations.collocation, years.year, quarters.name FROM articles_collocations
                      JOIN collocations ON (collocations.id = articles_collocations.collocation_id)
