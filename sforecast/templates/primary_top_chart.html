@@ -51,6 +51,38 @@
 
     <div>
     <form class="form-inline" role="form">
+      <div class="form-group">
+        Построить график за период с &nbsp;
+        <select class="browser-default custom-select" id="start_of_slice">
+          <option selected>2010</option>
+          <option value="2011">2011</option>
+          <option value="2012">2012</option>
+          <option value="2013">2013</option>
+          <option value="2014">2014</option>
+          <option value="2015">2015</option>
+          <option value="2016">2016</option>
+          <option value="2017">2017</option>
+          <option value="2018">2018</option>
+        </select>
+      </div>
+      <div class="form-group">
+      <div class="form-group">
+        &nbsp;по&nbsp;
+        <select class="browser-default custom-select" id="end_of_slice">
+          <option value="2010">2010</option>
+          <option value="2011">2011</option>
+          <option value="2012">2012</option>
+          <option value="2013">2013</option>
+          <option value="2014">2014</option>
+          <option value="2015">2015</option>
+          <option value="2016">2016</option>
+          <option value="2017">2017</option>
+          <option value="2018" selected>2018</option>
+        </select>
+        год
+      </div>
+      &nbsp;
+      <button type="button" class="btn btn-success" id="slicer">Построить</button>
       <button type="submit" class="btn btn-info">Квартальный прогноз на 2019 год</button>
     </form>
     </div>
@@ -69,25 +101,63 @@
     </footer>
   </div>
     <script type="text/javascript">
+      var labels_list_output = [{%for year in output.pop('years') %} '{{year}}',{% endfor %}];
 
-      var ctx = document.getElementById("myChart");
-      var myChart = new Chart(ctx, {
+      
+      var data_range = [0, labels_list_output.length-1];
+      var labels_list = labels_list_output.slice(data_range[0], data_range[1]);
+      var base_config = {
         type: 'line',
         data: {
-          labels: [{%for year in output.pop('years')[::-2] %} '{{year}}',{% endfor %}],
+          labels: labels_list,
           datasets:[
             
             {% for collocation in output %}
               {
-                data: [{%for records in output[collocation]['records'][::-2] %} '{{records}}',{% endfor %}],
+                data: [{%for records in output[collocation]['records'] %} '{{records}}',{% endfor %}],
                 label: '{{collocation}}',
                 borderColor: '{{output[collocation]['color']}}',
                 fill: false
               },
             {%endfor%}
           ]
-        }
-      });
+          }
+        };
+      var config = {
+        type: 'line',
+        data: {
+          labels: labels_list,
+          datasets:[
+            
+            {% for collocation in output %}
+              {
+                data: [{%for records in output[collocation]['records'] %} '{{records}}',{% endfor %}],
+                label: '{{collocation}}',
+                borderColor: '{{output[collocation]['color']}}',
+                fill: false
+              },
+            {%endfor%}
+          ]
+          }
+        };
+      
+      window.onload = function(){
+        var ctx = document.getElementById("myChart").getContext('2d');
+        window.myChart = new Chart(ctx, config); 
+      };
+      document.getElementById('slicer').addEventListener('click', function(){
+        var begin = document.getElementById('start_of_slice').value;
+        var end = document.getElementById('end_of_slice').value;
+        data_range[0] = labels_list_output.indexOf(begin);
+        data_range[1] = labels_list_output.indexOf(end) + 1;
+        config.data.labels = labels_list_output.slice(data_range[0], data_range[1]);
+        for (var i=0; i<config.data.datasets.length; i++){
+          config.data.datasets[i].data = base_config.data.datasets[i].data.slice(data_range[0], data_range[1]);
+        };
+        window.myChart.update();
+      }
+      );
+
     </script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/js/jquery-1.12.4.min.js"></script>

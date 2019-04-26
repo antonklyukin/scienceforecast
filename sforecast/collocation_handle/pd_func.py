@@ -21,18 +21,22 @@ def output_for_page (df):
     }
     """
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"]
+
     df = df.drop(columns=['Publication quarter'])
     col_dict = df.to_dict('list')
-    output_dict = {'years': df['Publication year'].unique()}
+
+    output_dict = {'years': df['Publication year'].sort_values().unique()}
     for collocation, year, records in zip(col_dict['Collocation'], col_dict['Publication year'], col_dict['records']):
         if collocation in output_dict:
             
             if year in output_dict[collocation]['years']:
                 ident = output_dict[collocation]['years'].index(year)
                 output_dict[collocation]['records'][ident] += records
+                print(output_dict[collocation]['years'][ident], '   ',  output_dict[collocation]['records'][ident])
             else:
                 output_dict[collocation]['years'].append(year)
                 output_dict[collocation]['records'].append(records)
+
         else:
             output_dict[collocation] = {'years': [year], 'records': [records]}
     i = 0
@@ -40,6 +44,7 @@ def output_for_page (df):
         if collocation == 'years':
             continue
         output_dict[collocation]['color'] = colors[i]
+        output_dict[collocation]['records'].reverse()
         del output_dict[collocation]['years']
         i+=1
     return output_dict
