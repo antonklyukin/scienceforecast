@@ -17,7 +17,7 @@ def get_from_primary(primary_domain):
 
     df = pd_func.query_to_df(query_list)
     dict_for_graphic = pd_func.output_for_page(df)
-    return dict_for_graphic
+    return dict_for_graphic, primary_domain_name
 
 
 def get_from_journal(journal_id):
