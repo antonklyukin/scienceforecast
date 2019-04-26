@@ -1,5 +1,6 @@
 import psycopg2
 import json
+import os
 
 from .settings import DB_SETTINGS
 
@@ -149,14 +150,15 @@ def journal_select_collocations(journal_id):
 
     return output, journal_name
 
-def get_total_list_of_super_domains(json_file):
+def get_total_list_of_super_domains():
     """
     возвращает список всех супер доменов
     в формате [{'Chemical Engineering': 'chemical-engineering'},
     {'Chemistry': 'chemistry'}]
     """
+    file_path = os.path.join(os.getcwd(), 'collocation_handle', 'domains.json')
     total_super_domains = []
-    with open(json_file) as file:
+    with open(file_path) as file:
         data = json.load(file)
     for super_domain in data:
         total_super_domains.append({f'{super_domain["name"]}': f'{super_domain["url"]}'})
@@ -166,14 +168,15 @@ def get_total_list_of_super_domains(json_file):
 
 
 
-def get_total_list_of_domains(json_file, superdomain_url_name):
+def get_total_list_of_domains(superdomain_url_name):
     """
     возвращает список всех доменов в требуемом супердомене (разделе) в
     формате [{'Chemical Engineering': 'chemical-engineering'},
     {'Chemistry': 'chemistry'}]
     """
     total_list_of_domains = []
-    with open(json_file) as f:
+    file_path = os.path.join(os.getcwd(), 'collocation_handle', 'domains.json')
+    with open(file_path) as f:
         data = json.load(f)
         for super_domain in data:
             if (super_domain['url'] == superdomain_url_name):
@@ -184,15 +187,16 @@ def get_total_list_of_domains(json_file, superdomain_url_name):
     return total_list_of_domains
 
 
-def get_total_list_of_subdomains(json_file, superdomain_url_name,
+def get_total_list_of_subdomains(superdomain_url_name,
                                  domain_url_name):
     """
     возвращает список всех поддоменов в требуемом домене в
     формате [['Chemical Engineering', 'chemical-engineering'],
     ['Chemistry', 'chemistry']]
     """
+    file_path = os.path.join(os.getcwd(), 'collocation_handle', 'domains.json')
     total_list_of_subdomains = []
-    with open(json_file) as f:
+    with open(file_path) as f:
         data = json.load(f)
         for super_domain in data:
             if (super_domain['url'] == superdomain_url_name):
