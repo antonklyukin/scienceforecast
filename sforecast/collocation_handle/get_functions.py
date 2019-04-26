@@ -14,5 +14,6 @@ def get_from_primary(primary_domain):
         return None
 
     df = pd_func.query_to_df(query_list)
-    return df
+    dict_for_graphic = pd_func.output_for_page(df)
+    return dict_for_graphic
 

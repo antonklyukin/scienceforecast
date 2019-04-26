@@ -54,46 +54,13 @@
 
     <div>
     <form class="form-inline" role="form">
-      <div class="form-group">
-        Построить график за период с &nbsp;
-        <select class="browser-default custom-select">
-          <option selected>2010</option>
-          <option value="2011">2011</option>
-          <option value="2012">2012</option>
-          <option value="2013">2013</option>
-          <option value="2014">2014</option>
-          <option value="2015">2015</option>
-          <option value="2016">2016</option>
-          <option value="2017">2017</option>
-          <option value="2018">2018</option>
-        </select>
-      </div>
-      <div class="form-group">
-      <div class="form-group">
-        &nbsp;по&nbsp;
-        <select class="browser-default custom-select">
-          <option value="2010">2010</option>
-          <option value="2011">2011</option>
-          <option value="2012">2012</option>
-          <option selected>2013</option>
-          <option value="2014">2014</option>
-          <option value="2015">2015</option>
-          <option value="2016">2016</option>
-          <option value="2017">2017</option>
-          <option value="2018">2018</option>
-        </select>
-        год
-      </div>
-      &nbsp;
-      <button type="submit" class="btn btn-success">Построить</button>
-      &nbsp;
       <button type="submit" class="btn btn-info">Квартальный прогноз на 2019 год</button>
     </form>
     </div>
     <br />
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Рейтинг самых частотных словосочетаний в аннотациях статей журнала за период с 2010 по 2013 гг.</h3>
+        <h3 class="panel-title">Рейтинг самых частотных словосочетаний в аннотациях статей журнала за период с 2010 по 2018 гг.</h3>
       </div>
       <div class="panel-body">
         <canvas id="myChart" width="1600" height="900"></canvas>
@@ -106,66 +73,20 @@
   </div>
     <script type="text/javascript">
 
-      // Our labels along the x-axis
-      var years = ['2010','2011','2012','2013'];
-      // For drawing the lines
-      var word_01 = [0,35,29,26];
-      var word_02 = [35,26,40,33];
-      var word_03 = [0,19,28,21];
-      var word_04 = [21,21,31,31];
-      var word_05 = [33,51,60,55];
-      var word_06 = [26,29,34,38];
-      var word_07 = [0,34,47,46];
-
       var ctx = document.getElementById("myChart");
       var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: years,
-          datasets: [
-              { 
-                data: word_01,
-                label: "DNA damage",
+          labels: [{%for year in output.pop('years')[::-2] %} '{{year}}',{% endfor %}],
+          datasets:[
+            {% for collocation in output %}
+              {
+                data: [{%for records in output[collocation]['records'][::-2] %} '{{records}}',{% endfor %}],
+                label: '{{collocation}}',
                 borderColor: "#1f77b4",
                 fill: false
               },
-              { 
-                data: word_02,
-                label: "T cell",
-                borderColor: "#ff7f0e",
-                fill: false
-              },
-              { 
-                data: word_03,
-                label: "mesenchymal stem cell",
-                borderColor: "#2ca02c",
-                fill: false
-              },
-              { 
-                data: word_04,
-                label: "reactive oxygen specie",
-                borderColor: "#d62728",
-                fill: false
-              },
-              { 
-                data: word_05,
-                label: "reticulum ER",
-                borderColor: "#9467bd",
-                fill: false
-              },
-              { 
-                data: word_06,
-                label: "smooth muscle cell",
-                borderColor: "#8c564b",
-                fill: false
-              },
-              { 
-                data: word_07,
-                label: "specie ROS",
-                borderColor: "#e377c2",
-                fill: false
-              }
-
+            {%endfor%}
           ]
         }
       });

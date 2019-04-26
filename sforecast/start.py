@@ -31,7 +31,10 @@ def domain_view(name):
 
 @app.route('/primary/<name>')
 def primary_domain_view(name):
+    """
+    Вьюха для просмотра статистики по супердомену
+    """
     output = get_functions.get_from_primary(name)
     if output is None:
         return 'Incorrect name'
-    return str(output)
+    return render_template('primary_top_chart.html', output=output)
