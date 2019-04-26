@@ -103,3 +103,53 @@ def subdomain_select_collocations(name):
         output.append(row)
 
     return output
+
+
+def get_list_of_journals_in_subdomain(subdomain_name):
+    """
+    Функция берет нормализированное (astronomy_and_astrophysics) название
+    поддомена и выдает dict({name: "Absolute Radiometry", id: "124"}, ...)
+    """
+    pass
+
+
+def get_list_of_subdomains_in_domain(domain_name):
+    """
+    Функция берет нормализированное (physics_and_astronomy) название домена
+    и выдает dict({name: "Astronomy and Astrophysics", 
+    link_name: "astronomy_and_astrophysics"}, ...)
+    """
+    pass
+
+
+def get_journal_collocations_yearly_data(journal_id, start_year=None,
+                                         end_year=None ):
+    """
+    Функция берет id журнала (124), год начала снятия данных(если указан)
+    и год конца снятия данных (если указан) и выдает dict() с погодичными
+    данными для дальнейшей обработки??? для построения графика
+    collocation  number  year
+    DNA damage       0  2010
+    DNA damage      35  2011
+    DNA damage      29  2012
+    DNA damage      26  2013
+    T cell      35  2010
+    T cell      26  2011
+    T cell      40  2012
+    T cell      33  2013
+    """
+    pass
+
+
+def get_total_list_of_domains():
+    """
+    возвращает список всех доменов
+    """
+    pass
+
+
+def get_total_list_of_subdomains():
+    """
+    возвращает список всех поддоменов
+    """
+    pass

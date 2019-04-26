@@ -15,19 +15,16 @@ def index():
 def subdomains():
     return render_template('domains-list.html')
 
-@app.route('/journal')
+
+@app.route('/journal/<id>')
 def journal():
     return render_template('journal-graph.html')
-
-
-@app.route('/hello')
-def hello():
-    return 'Hello, World'
 
 
 @app.route('/domain/<name>')
 def domain_view(name):
     return render_template('journal-graph.html')
+
 
 @app.route('/primary/<name>')
 def primary_domain_view(name):
