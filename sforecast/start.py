@@ -1,4 +1,4 @@
-from .collocation_handle import get_functions
+from .collocation_handle import get_functions, db_adaptor
 #import psycopg2
 from flask import Flask, render_template
 
@@ -11,9 +11,27 @@ def index():
     return render_template('main.html')
 
 
-@app.route('/subdomains')
-def subdomains():
-    return render_template('domains-list.html')
+@app.route('/<primary_domain_url>')
+def list_domains(primary_domain_url):
+    primary_domains_list = [{'physical-sciences-and-engineering': 'Physical Sciences and Engineering'},
+                            {'life-sciences': 'Life Sciences'},
+                            {'health-sciences': 'Health Sciences'},
+                            {'social-sciences-and-humanities': 'Social Sciences and Humanities'},
+                            ]
+
+    primary_domain_name = ''
+    for primary_domain_dict in primary_domains_list:
+        if primary_domain_url in primary_domain_dict.keys():
+            primary_domain_name = primary_domain_dict[primary_domain_url]
+
+    list_of_domains = db_adaptor.get_total_list_of_domains(
+        'collocation_handle/domains.json', primary_domain_url)
+
+
+    return render_template('domains-list.html',
+                           primary_domain_name=primary_domain_name,
+                           primary_domain_url=primary_domain_url,
+                           list_of_subdomains=list_of_domains)
 
 
 @app.route('/<super_domain_url>/<domain_url>/<subdomain_url>/<journal_id>')

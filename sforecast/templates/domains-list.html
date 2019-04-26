@@ -25,7 +25,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#"><img src="/static/img/sforecast-logo.png" alt="Science Forecast">
+          <a class="navbar-brand" href="/"><img src="/static/img/sforecast-logo.png" alt="Science Forecast">
           </a>
         </div>
         <div class="navbar-collapse collapse">
@@ -41,32 +41,35 @@
     </nav>
     <div>
       <ol class="breadcrumb">
-        <li><a href="#">Life Sciences</a></li>
+        <li><a href="/{{primary_domain_url}}">{{primary_domain_name}}</a></li>
       </ol>
     </div>
     <div class="panel panel-default">
       <!-- Default panel contents -->
-      <div class="panel-heading lead">Выберите интересующий домен раздела Life Sciences</div>
+      <div class="panel-heading lead">Выберите интересующий домен раздела {{primary_domain_name}}</div>
       <div class="panel-body">
         <p>Активные ссылки имеют только обработанные на данный момент домены</p>
       </div>
         <table class="table">
           <tbody>
+            {% for subdomain in list_of_subdomains %}
+            {% if loop.index % 3 == 1%}
             <tr>
-              <td width="34%"><a href="">Chemical Engineering</a></td>
-              <td width="33%"><a href="">Chemistry</a></td>
-              <td width="33%"><a href="">Computer Science</a></td>
+            {% endif %}
+              <td width="33%">{{subdomain[0]}}</td>
+            {% if loop.index % 3 == 0 %}
             </tr>
-            <tr>
-              <td width="34%"><a href="">Earth and Planetary Sciences</a></td>
-              <td width="33%"><a href="">Energy</a></td>
-              <td width="33%"><a href="">Engineering</a></td>
+            {% endif %}
+            {% if loop.last % 3 == 1 %}
+              <td width="33%">&nbsp;</td>
+              <td width="33%">&nbsp;</td>
             </tr>
-            <tr>
-              <td width="34%"><a href="">Materials Science</a></td>
-              <td width="33%">Mathematics</td>
-              <td width="33%">Physics and Astronomy</td>
+            {% endif %}
+            {% if loop.last % 3 == 2 %}
+              <td width="33%">&nbsp;</td>
             </tr>
+            {% endif %}
+            {% endfor %}
           </tbody>
         </table>
     </div>

@@ -178,8 +178,8 @@ def get_total_list_of_domains(json_file, superdomain_url_name):
         for super_domain in data:
             if (super_domain['url'] == superdomain_url_name):
                 for domain in super_domain['domains']:
-                    total_list_of_domains.append({domain['name']:
-                                                  domain['url']})
+                    total_list_of_domains.append([domain['name'],
+                                                  domain['url']])
 
     return total_list_of_domains
 
@@ -188,8 +188,8 @@ def get_total_list_of_subdomains(json_file, superdomain_url_name,
                                  domain_url_name):
     """
     возвращает список всех поддоменов в требуемом домене в
-    формате [{'Chemical Engineering': 'chemical-engineering'},
-    {'Chemistry': 'chemistry'}]
+    формате [['Chemical Engineering', 'chemical-engineering'],
+    ['Chemistry', 'chemistry']]
     """
     total_list_of_subdomains = []
     with open(json_file) as f:
@@ -199,8 +199,8 @@ def get_total_list_of_subdomains(json_file, superdomain_url_name,
                 for domain in super_domain['domains']:
                     if domain['url'] == domain_url_name:
                         for subdomain in domain['subdomains']:
-                            total_list_of_subdomains.append({subdomain['name']:
-                                                            subdomain['url']})
+                            total_list_of_subdomains.append([subdomain['name'],
+                                                            subdomain['url']])
 
     return total_list_of_subdomains
 
