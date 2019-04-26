@@ -26,14 +26,27 @@ def list_domains(primary_domain_url):
         if primary_domain_url in primary_domain_dict.keys():
             primary_domain_name = primary_domain_dict[primary_domain_url]
 
-    list_of_domains = db_adaptor.get_total_list_of_domains(
-        'collocation_handle/domains.json', primary_domain_url)
+    list_of_domains = db_adaptor.get_total_list_of_domains(primary_domain_url)
 
 
     return render_template('domains-list.html',
                            primary_domain_name=primary_domain_name,
                            primary_domain_url=primary_domain_url,
                            list_of_subdomains=list_of_domains)
+
+
+@app.route('/<super_domain_url>/<domain_url>')
+def domain_view(super_domain_url, domain_url):
+    return render_template('journal-graph.html')
+
+@app.route('/<super_domain_url>/<domain_url>/<subdomain_url>')
+def subdomain_view(super_domain_url, domain_url, subdomain_url):
+    # Получение имен
+    super_domain_name = get_functions.url_form_to_name(super_domain_url)
+    domain_name = get_functions.url_form_to_name(domain_url)
+    subdomain_name = get_functions.url_form_to_name(subdomain_url)
+    return render_template('journal-graph.html')
+
 
 
 @app.route('/<super_domain_url>/<domain_url>/<subdomain_url>/<journal_id>')
@@ -56,23 +69,3 @@ def get_journal(super_domain_url, domain_url, subdomain_url, journal_id):
 
     return render_template('journal-graph.html', output=output, names=names, urls=urls)
 
-@app.route('/<super_domain_url>/<domain_url>/<subdomain_url>')
-def subdomain_view(name):
-    return render_template('journal-graph.html')
-
-@app.route('/<super_domain_url>/<domain_url>')
-def domain_view(name):
-    return render_template('journal-graph.html')
-
-
-@app.route('/<super_domain_url>')
-def primary_domain_view(name):
-    """
-    Вьюха для просмотра статистики по супердомену
-    """
-    
-    (output, full_name) = get_functions.get_from_primary(name)
-    if output is None:
-        return 'Incorrect name'
-    
-    return render_template('primary_top_chart.html', output=output, name=full_name)
