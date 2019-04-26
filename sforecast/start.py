@@ -17,7 +17,7 @@ def subdomains():
 
 
 @app.route('/journal/<id>')
-def journal():
+def get_journal():
     return render_template('journal-graph.html')
 
 

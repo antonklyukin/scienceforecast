@@ -1,4 +1,5 @@
 import psycopg2
+import json
 
 from .settings import DB_SETTINGS
 
@@ -141,15 +142,69 @@ def get_journal_collocations_yearly_data(journal_id, start_year=None,
     pass
 
 
-def get_total_list_of_domains():
+def get_total_list_of_domains(json_file, superdomain_url_name):
     """
-    возвращает список всех доменов
+    возвращает список всех доменов в требуемом супердомене (разделе) в
+    формате [{'Chemical Engineering': 'chemical-engineering'},
+    {'Chemistry': 'chemistry'}]
+    """
+    total_list_of_domains = []
+    with open(json_file) as f:
+        data = json.load(f)
+        for super_domain in data:
+            if (super_domain['url'] == superdomain_url_name):
+                for domain in super_domain['domains']:
+                    total_list_of_domains.append({domain['name']:
+                                                  domain['url']})
+
+    return total_list_of_domains
+
+
+def get_total_list_of_subdomains(json_file, superdomain_url_name,
+                                 domain_url_name):
+    """
+    возвращает список всех поддоменов в требуемом домене в
+    формате [{'Chemical Engineering': 'chemical-engineering'},
+    {'Chemistry': 'chemistry'}]
+    """
+    total_list_of_subdomains = []
+    with open(json_file) as f:
+        data = json.load(f)
+        for super_domain in data:
+            if (super_domain['url'] == superdomain_url_name):
+                for domain in super_domain['domains']:
+                    if domain['url'] == domain_url_name:
+                        for subdomain in domain['subdomains']:
+                            total_list_of_subdomains.append({subdomain['name']:
+                                                            subdomain['url']})
+
+    return total_list_of_subdomains
+
+
+def get_available_list_of_domains():
+    """
+    возвращает список всех доменов в требуемом супердомене (разделе),
+    в которых есть журналы в базе
+    формате ['Chemical Engineering', 'Chemistry'}
     """
     pass
 
 
-def get_total_list_of_subdomains():
+def get_available_list_of_subdomains():
     """
-    возвращает список всех поддоменов
+    возвращает список всех поддоменов в требуемом домене,
+    в которых есть журналы в базе
+    формате ['Chemical Engineering', 'Chemistry'}
     """
     pass
+
+def get_available_list_of_journals():
+    """
+    возвращает список всех журналов из базы в требуемом поддомене в
+    формате [{'id': 'AASRI Procedia'}]
+    """   
+
+
+# get_total_list_of_domains('domains.json', 'physical-sciences-and-engineering')
+
+# get_total_list_of_subdomains('domains.json', 'physical-sciences-and-engineering', 'energy')
