@@ -79,11 +79,12 @@
         data: {
           labels: [{%for year in output.pop('years')[::-2] %} '{{year}}',{% endfor %}],
           datasets:[
+            
             {% for collocation in output %}
               {
                 data: [{%for records in output[collocation]['records'][::-2] %} '{{records}}',{% endfor %}],
                 label: '{{collocation}}',
-                borderColor: "#1f77b4",
+                borderColor: '{{output[collocation]['color']}}',
                 fill: false
               },
             {%endfor%}

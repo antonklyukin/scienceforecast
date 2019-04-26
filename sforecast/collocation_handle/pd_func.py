@@ -20,6 +20,7 @@ def output_for_page (df):
         'collocation_name': {'years':[], 'records'}
     }
     """
+    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"]
     df = df.drop(columns=['Publication quarter'])
     col_dict = df.to_dict('list')
     output_dict = {'years': df['Publication year'].unique()}
@@ -34,5 +35,11 @@ def output_for_page (df):
                 output_dict[collocation]['records'].append(records)
         else:
             output_dict[collocation] = {'years': [year], 'records': [records]}
-    
+    i = 0
+    for collocation in output_dict:
+        if collocation == 'years':
+            continue
+        output_dict[collocation]['color'] = colors[i]
+        del output_dict[collocation]['years']
+        i+=1
     return output_dict
