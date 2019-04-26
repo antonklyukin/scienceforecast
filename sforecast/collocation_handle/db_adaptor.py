@@ -133,16 +133,16 @@ def journal_select_collocations(journal_id):
                      SELECT id
                      FROM articles
                      WHERE journal_id = %s)
-                     )
                 """, (journal_id, ))
     
     output_query = cur.fetchall()
-    cur.execute("SELECT name FROM journals WHERE id = %s", (journal_id))
+    if not output_query:
+        return None
+    cur.execute("SELECT name FROM journals WHERE id = %s", (journal_id,))
     journal_name = cur.fetchone()[0]
     cur.close()
     connector.close()
-    if not output_query:
-        return None
+    
     output = []
     for row in output_query:
         output.append(row)

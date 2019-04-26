@@ -25,12 +25,12 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#"><img src="/static/img/sforecast-logo.png" alt="Science Forecast">
+          <a class="navbar-brand" href="{{ url_for('index') }}"><img src="/static/img/sforecast-logo.png" alt="Science Forecast">
           </a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Главная</a></li>
+            <li><a href="{{ url_for('index') }}">Главная</a></li>
             <li class="active"><a href="#">Журналы</a></li>
             <li><a href="#">О проекте</a></li>
           </ul>
@@ -45,9 +45,9 @@
     </div>
     <div>
       <ol class="breadcrumb">
-        <li><a href="#">{{names['super_domain']}}</a></li>
-        <li><a href="#">{{names['domain']}}</a></li>
-        <li><a href="#">{{names['subdomain']}}</a></li>
+        <li><a href="{{url_for('primary_domain_view', super_domain_url=urls['super_domain'])}}">{{names['super_domain']}}</a></li>
+        <li><a href="{{url_for('domain_view', super_domain_url=urls['super_domain'], domain_url=urls['domain'])}}">{{names['domain']}}</a></li>
+        <li><a href="{{url_for('subdomain_view', super_domain_url=urls['super_domain'], domain_url=urls['domain'], subdomain_url=urls['subdomain'])}}">{{names['subdomain']}}</a></li>
         <li class="active">{{names['journal']}}</li>
       </ol>
     </div>
@@ -56,7 +56,7 @@
     <form class="form-inline" role="form">
       <div class="form-group">
         Построить график за период с &nbsp;
-        <select class="browser-default custom-select">
+        <select class="browser-default custom-select" id="start_of_slice">
           <option selected>2010</option>
           <option value="2011">2011</option>
           <option value="2012">2012</option>
@@ -71,7 +71,7 @@
       <div class="form-group">
       <div class="form-group">
         &nbsp;по&nbsp;
-        <select class="browser-default custom-select">
+        <select class="browser-default custom-select" id="end_of_slice">
           <option value="2010">2010</option>
           <option value="2011">2011</option>
           <option value="2012">2012</option>
@@ -81,6 +81,7 @@
           <option value="2016">2016</option>
           <option value="2017">2017</option>
           <option value="2018" selected>2018</option>
+        </select>
         </select>
         год
       </div>

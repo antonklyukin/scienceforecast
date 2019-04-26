@@ -1,7 +1,9 @@
 from .collocation_handle import get_functions, db_adaptor
 #import psycopg2
 from flask import Flask, render_template
+import os
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 app = Flask(__name__)
 
@@ -36,27 +38,34 @@ def list_domains(primary_domain_url):
 
 @app.route('/<super_domain_url>/<domain_url>/<subdomain_url>/<journal_id>')
 def get_journal(super_domain_url, domain_url, subdomain_url, journal_id):
+    # Получение имен
     super_domain_name = get_functions.url_form_to_name(super_domain_url)
     domain_name = get_functions.url_form_to_name(domain_url)
     subdomain_name = get_functions.url_form_to_name(subdomain_url)
-    if not (super_domain_name & domain_name & subdomain_name):
+    if not (bool(super_domain_name) & bool(domain_name) & bool(subdomain_name)):
         return render_template('404.html', text='Incorrect journal path')
     
-    (output, journal_name) = get_functions.get_from_journal(journal_id)
-    if output is None:
+    result = get_functions.get_from_journal(journal_id)
+    if result is None:
         return render_template('404.html', text='Incorrect journal id')
+    output = result[0]
+    journal_name = result[1]
 
     names = {'super_domain': super_domain_name, 'domain': domain_name, 'subdomain': subdomain_name, 'journal': journal_name}
+    urls = {'super_domain': super_domain_url, 'domain': domain_url, 'subdomain': subdomain_url, 'journal': journal_id}
 
-    return render_template('journal-graph.html', output=output, names=names)
+    return render_template('journal-graph.html', output=output, names=names, urls=urls)
 
+@app.route('/<super_domain_url>/<domain_url>/<subdomain_url>')
+def subdomain_view(name):
+    return render_template('journal-graph.html')
 
-@app.route('/domain/<name>')
+@app.route('/<super_domain_url>/<domain_url>')
 def domain_view(name):
     return render_template('journal-graph.html')
 
 
-@app.route('/<name>')
+@app.route('/<super_domain_url>')
 def primary_domain_view(name):
     """
     Вьюха для просмотра статистики по супердомену

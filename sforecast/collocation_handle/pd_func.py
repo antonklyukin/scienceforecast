@@ -59,7 +59,7 @@ def normalize_range_data_frame(frame):
     """
     collocations = frame['Collocation'].unique()
     years = frame['Publication year'].unique()
-    quarters = frame['Publication quarter'].unique
+    quarters = frame['Publication quarter'].unique()
 
     for collocation in collocations:
         for year in years:

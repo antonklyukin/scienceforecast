@@ -2,6 +2,7 @@ from . import db_adaptor
 from . import pd_func
 from . import support
 
+import os
 import json
 
 
@@ -25,17 +26,22 @@ def get_from_journal(journal_id):
     Функция возвращает датафрейм со словосочетаниями
     """
 
-    (df, journal_name) = from_journal_for_forecast(journal_id)  # форма для форкаста
+    output = from_journal_for_forecast(journal_id)  # форма для форкаста
+    print(output)
+    if not output:
+        return None
+    df = output[0]
+    journal_name = output[1]
     dict_for_graphic = pd_func.output_for_page(df)
     return dict_for_graphic, journal_name
 
 def from_journal_for_forecast(journal_id):
 
-    (query_list, journal_name) = db_adaptor.journal_select_collocations(journal_id)
-    
-    if query_list is None:
+    output = db_adaptor.journal_select_collocations(journal_id)
+    if not output:
         return None
-
+    query_list = output[0]
+    journal_name = output[1]
     return pd_func.query_to_df(query_list), journal_name # форма для форкаста
     
 
@@ -43,7 +49,8 @@ def url_form_to_name(domain_url):
     """
     Функция преобразует url в название согласно файлу
     """
-    with open('domains.json') as file:
+    file_path = os.path.join(os.getcwd(), 'collocation_handle', 'domains.json')
+    with open(file_path) as file:
         data = json.load(file)
     for super_domain in data:
         if domain_url == super_domain['url']:
