@@ -2,12 +2,14 @@ from . import db_adaptor
 from . import pd_func
 from . import support
 
+import json
+
 
 def get_from_primary(primary_domain):
     """
     Функция возвращает датафрейм со словосочетаниями
     """
-    primary_domain_name = get_pretty_domain_name(primary_domain)
+    primary_domain_name = url_form_to_name(primary_domain)
     query_list = db_adaptor.primary_select_collocations(primary_domain_name)
     
     if query_list is None:
@@ -18,35 +20,39 @@ def get_from_primary(primary_domain):
     return dict_for_graphic
 
 
-def get_from_journal(journal_name):
+def get_from_journal(journal_id):
     """
     Функция возвращает датафрейм со словосочетаниями
     """
-    
-    df = from_journal_for_forecast(query_list)  # форма для форкаста
-    dict_for_graphic = pd_func.output_for_page(df)
-    return dict_for_graphic
 
-def from_journal_for_forecast(journal_name):
-    journal_name = get_pretty_domain_name(journal_domain)
-    query_list = db_adaptor.journal_select_collocations(journal_name)
+    (df, journal_name) = from_journal_for_forecast(journal_id)  # форма для форкаста
+    dict_for_graphic = pd_func.output_for_page(df)
+    return dict_for_graphic, journal_name
+
+def from_journal_for_forecast(journal_id):
+
+    (query_list, journal_name) = db_adaptor.journal_select_collocations(journal_id)
     
     if query_list is None:
         return None
 
-    return pd_func.query_to_df(query_list)  # форма для форкаста
+    return pd_func.query_to_df(query_list), journal_name # форма для форкаста
     
 
-def get_pretty_domain_name(domain_name):
+def url_form_to_name(domain_url):
     """
-    Функция преобразует строку из health_life в Health Life
+    Функция преобразует url в название согласно файлу
     """
-    words = domain_name.split('_')
-    out = []
-    for word in words:
-        if word == 'and':
-            out.append(word)
-            continue
-        out.append(word.capitalize())
-    print(' '.join(out))
-    return ' '.join(out)
+    with open('domains.json') as file:
+        data = json.load(file)
+    for super_domain in data:
+        if domain_url == super_domain['url']:
+            return super_domain['name']
+        for domain in super_domain['domains']:
+            if domain_url == domain['url']:
+                return domain['name']
+            for subdomain in domain['subdomains']:
+                if domain_url == subdomain['url']:
+                    return subdomain['name']
+
+    return None

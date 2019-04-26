@@ -9,15 +9,15 @@ def query_to_df(query_list):
     new_df = df.groupby(df.columns.tolist()).size().reset_index().rename(columns={0:'records'})
     # Получение датафрейма из топ 5 словосочетаний разбитые по кварталам
     new_df.sort_values(by=['Collocation', 'Publication year', 'Publication quarter', 'records'], ascending=False, inplace=True)
-
+    normalize_range_data_frame(new_df)
     return new_df
 
 def output_for_page (df):
     """
     Функция вводит словарь вида
     {
-        'years': [2019, ....],
-        'collocation_name': {'years':[], 'records'}
+        'years': [2010, ....],
+        'collocation_name': {'records': , 'color':}
     }
     """
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"]
@@ -40,11 +40,37 @@ def output_for_page (df):
         else:
             output_dict[collocation] = {'years': [year], 'records': [records]}
     i = 0
+    # Приведение к возростающему виду
     for collocation in output_dict:
         if collocation == 'years':
             continue
         output_dict[collocation]['color'] = colors[i]
         output_dict[collocation]['records'].reverse()
         del output_dict[collocation]['years']
-        i+=1
+        i += 1
+
     return output_dict
+
+def normalize_range_data_frame(frame):
+    """
+    Functions gets a frame of sevaral years of type collocation, number, year.
+    Adds to this frame zero number of collocations in year records when they
+    were absent (Example: matrix ECM 0 2015, matrix ECM 0 2016)
+    """
+    collocations = frame['Collocation'].unique()
+    years = frame['Publication year'].unique()
+    quarters = frame['Publication quarter'].unique
+
+    for collocation in collocations:
+        for year in years:
+            for quarter in quarters:
+                test_frame = frame[(frame['Collocation'] == collocation) &
+                                   (frame['Publication year'] == year) &
+                                    (frame['Publication quarter'] == quarter)]
+                if test_frame.empty:
+                    frame = frame.append({'Collocation': collocation,
+                                          'Publication year': year,
+                                          'Publication quarter': quarter,
+                                          'records': 0}, ignore_index=True)
+
+    return frame
