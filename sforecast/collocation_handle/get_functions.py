@@ -22,15 +22,20 @@ def get_from_journal(journal_name):
     """
     Функция возвращает датафрейм со словосочетаниями
     """
+    
+    df = from_journal_for_forecast(query_list)  # форма для форкаста
+    dict_for_graphic = pd_func.output_for_page(df)
+    return dict_for_graphic
+
+def from_journal_for_forecast(journal_name):
     journal_name = get_pretty_domain_name(journal_domain)
     query_list = db_adaptor.journal_select_collocations(journal_name)
     
     if query_list is None:
         return None
 
-    df = pd_func.query_to_df(query_list)  # форма для форкаста
-    dict_for_graphic = pd_func.output_for_page(df)
-    return dict_for_graphic
+    return pd_func.query_to_df(query_list)  # форма для форкаста
+    
 
 def get_pretty_domain_name(domain_name):
     """
