@@ -7,7 +7,7 @@ def get_from_primary(primary_domain):
     """
     Функция возвращает датафрейм со словосочетаниями
     """
-    primary_domain_name = support.pretty_domain_name(primary_domain)
+    primary_domain_name = get_pretty_domain_name(primary_domain)
     query_list = db_adaptor.primary_select_collocations(primary_domain_name)
     
     if query_list is None:
@@ -17,3 +17,17 @@ def get_from_primary(primary_domain):
     dict_for_graphic = pd_func.output_for_page(df)
     return dict_for_graphic
 
+
+def get_pretty_domain_name(domain_name):
+    """
+    Функция преобразует строку из health_life в Health Life
+    """
+    words = domain_name.split('_')
+    out = []
+    for word in words:
+        if word == 'and':
+            out.append(word)
+            continue
+        out.append(word.capitalize())
+    print(' '.join(out))
+    return ' '.join(out)

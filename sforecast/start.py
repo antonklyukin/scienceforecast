@@ -37,5 +37,5 @@ def primary_domain_view(name):
     output = get_functions.get_from_primary(name)
     if output is None:
         return 'Incorrect name'
-    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"]
-    return render_template('primary_top_chart.html', output=output, colors=colors)
+    full_name = get_functions.get_pretty_domain_name(name)
+    return render_template('primary_top_chart.html', output=output, name=full_name)
