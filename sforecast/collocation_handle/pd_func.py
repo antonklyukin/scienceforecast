@@ -63,7 +63,6 @@ def normalize_range_data_frame(frame):
     for collocation in collocations:
         for year in years:
             for quarter in quarters:
-                print('collocation   ', collocation, '   year   ', year, '  quarter     ', quarter)
                 test_frame = frame.loc[(frame['Collocation'].isin([collocation])) &
                                    (frame['Publication year'].isin([year])) &
                                     (frame['Publication quarter'].isin([quarter]))]
