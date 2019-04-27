@@ -18,7 +18,7 @@
     <form class="form-inline" role="form">
       <div class="form-group">
         Построить график за период с &nbsp;
-        <select class="browser-default custom-select" id="start_of_slice">
+        <select class="browser-default custom-select" id="start_of_slice", onchange="start_changed(this.value)">
           <option selected>2010</option>
           <option value="2011">2011</option>
           <option value="2012">2012</option>
@@ -33,7 +33,7 @@
       <div class="form-group">
       <div class="form-group">
         &nbsp;по&nbsp;
-        <select class="browser-default custom-select" id="end_of_slice">
+        <select class="browser-default custom-select" id="end_of_slice" onchange="end_changed(this.value)">
           <option value="2010">2010</option>
           <option value="2011">2011</option>
           <option value="2012">2012</option>
@@ -50,7 +50,7 @@
       &nbsp;
       <button type="button" class="btn btn-success" id="slicer">Построить</button>
       &nbsp;
-     {#  <button type="submit" class="btn btn-info">Квартальный прогноз на 2019 год</button> #}
+     <button type="submit" class="btn btn-info">Квартальный прогноз на 2019 год</button> 
     </form>
     </div>
     <br />
@@ -64,9 +64,37 @@
     </div>
   </div>
     <script type="text/javascript">
+
       var labels_list_output = [{%for year in output.pop('years') %} '{{year}}',{% endfor %}];
 
-      
+      function start_changed(start_value) {
+        var ending = document.getElementById("end_of_slice")
+        for (var i = 0; i<ending.childNodes.length; i++){
+          if (typeof ending.childNodes[i].value !== "undefined") {
+            s = +ending.childNodes[i].value
+            sv = +start_value 
+            if (s < sv) {
+              ending.childNodes[i].style.display = "none"}
+            else {
+              ending.childNodes[i].style.display = "block"
+            };
+          };
+        };
+      };
+      function end_changed(end_value) {
+        var starting = document.getElementById("start_of_slice")
+        for (var i = 0; i<starting.childNodes.length; i++){
+          if (typeof starting.childNodes[i].value !== "undefined") {
+            s = +starting.childNodes[i].value
+            sv = +end_value 
+            if (s > sv) {
+              starting.childNodes[i].style.display = "none"}
+            else {
+              starting.childNodes[i].style.display = "block"
+            };
+          };
+        };
+      };
       var data_range = [0, labels_list_output.length-1];
       var labels_list = labels_list_output.slice(data_range[0], data_range[1]);
       var base_config = {
