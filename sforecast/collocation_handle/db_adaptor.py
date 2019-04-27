@@ -180,10 +180,10 @@ def get_total_list_of_domains(superdomain_url_name):
     with open(file_path) as f:
         data = json.load(f)
         for super_domain in data:
+            print(super_domain['url'])
             if (super_domain['url'] == superdomain_url_name):
                 for domain in super_domain['domains']:
-                    total_list_of_domains.append([domain['name'],
-                                                  domain['url']])
+                    total_list_of_domains.append({domain['name']: domain['url']})
 
     return total_list_of_domains
 
@@ -204,8 +204,7 @@ def get_total_list_of_subdomains(superdomain_url_name,
                 for domain in super_domain['domains']:
                     if domain['url'] == domain_url_name:
                         for subdomain in domain['subdomains']:
-                            total_list_of_subdomains.append([subdomain['name'],
-                                                            subdomain['url']])
+                            total_list_of_subdomains.append({subdomain['name']: subdomain['url']})
 
     return total_list_of_subdomains
 
@@ -253,11 +252,12 @@ def get_available_list_of_subdomains(domain_name):
     output_query = cur.fetchall()
     cur.close()
     connector.close()
+    print(output_query)
     if not output_query:
         return None
-    output = {}
+    output = []
     for row in output_query:
-        output['name'] = row[0]
+        output.append(row[0])
 
     return output
 
@@ -282,6 +282,15 @@ def get_available_list_of_journals(subdomain_name):
         output[f'{row[1]}'] = row[0]
 
     return output
+
+def get_journal_name(journal_id):
+    connector = psycopg2.connect(DB_SETTINGS)
+    cur = connector.cursor()
+    cur.execute("SELECT name FROM journals WHERE id = %s", (journal_id,))
+    journal_name = cur.fetch()[0]
+    cur.close()
+    connector.close()
+    return journal_name
 
 if __name__ == '__main__':
     print('Available super domains \n', get_available_list_of_super_domains())

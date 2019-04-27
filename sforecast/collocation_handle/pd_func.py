@@ -20,6 +20,7 @@ def output_for_page (df):
         'collocation_name': {'records': , 'color':}
     }
     """
+
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"]
 
     df = df.drop(columns=['Publication quarter'])
@@ -32,7 +33,6 @@ def output_for_page (df):
             if year in output_dict[collocation]['years']:
                 ident = output_dict[collocation]['years'].index(year)
                 output_dict[collocation]['records'][ident] += records
-                print(output_dict[collocation]['years'][ident], '   ',  output_dict[collocation]['records'][ident])
             else:
                 output_dict[collocation]['years'].append(year)
                 output_dict[collocation]['records'].append(records)
@@ -60,11 +60,14 @@ def normalize_range_data_frame(frame):
     collocations = frame['Collocation'].unique()
     years = frame['Publication year'].unique()
     quarters = frame['Publication quarter'].unique()
-
+    print(frame['Collocation'])
+    print(collocations)
+    for collocation in collocations:
+        print(frame.loc[frame['Collocation'] == collocation])
     for collocation in collocations:
         for year in years:
             for quarter in quarters:
-                test_frame = frame[(frame['Collocation'] == collocation) &
+                test_frame = frame.loc[(frame['Collocation'] == collocation) &
                                    (frame['Publication year'] == year) &
                                     (frame['Publication quarter'] == quarter)]
                 if test_frame.empty:

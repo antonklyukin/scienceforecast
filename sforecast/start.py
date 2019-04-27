@@ -1,48 +1,47 @@
-from .collocation_handle import get_functions, db_adaptor
+from .collocation_handle import get_functions
 #import psycopg2
 from flask import Flask, render_template
 import os
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 app = Flask(__name__)
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 @app.route('/')
 def index():
     return render_template('main.html')
 
+@app.route('/list')
+def list_super_domains():
+    super_domains_list = get_functions.get_list_for_super_domains()
+    return render_template('super_domains-list.html',
+                           list_of=super_domains_list,
+                           urlfor = 'list_domains')   
 
 @app.route('/<primary_domain_url>')
 def list_domains(primary_domain_url):
-    primary_domains_list = [{'physical-sciences-and-engineering': 'Physical Sciences and Engineering'},
-                            {'life-sciences': 'Life Sciences'},
-                            {'health-sciences': 'Health Sciences'},
-                            {'social-sciences-and-humanities': 'Social Sciences and Humanities'},
-                            ]
-
-    primary_domain_name = ''
-    for primary_domain_dict in primary_domains_list:
-        if primary_domain_url in primary_domain_dict.keys():
-            primary_domain_name = primary_domain_dict[primary_domain_url]
-
-    list_of_domains = db_adaptor.get_total_list_of_domains(primary_domain_url)
-    list_of_available_domains = db_adaptor.get_available_list_of_domains(primary_domain_name)
-    for domain in list_of_domains:
-        if domain[0] in list_of_available_domains:
-            domain.append('Available')
-        else:
-            domain.append('Not Available')
-
+    domains_list = get_functions.get_list_for_domains(primary_domain_url)
+    super_domain_name = get_functions.url_form_to_name(primary_domain_url)
+    super_domain = {'name': super_domain_name, 'url': primary_domain_url}
     return render_template('domains-list.html',
-                           primary_domain_name=primary_domain_name,
-                           primary_domain_url=primary_domain_url,
-                           list_of_domains=list_of_domains)
+                           list_of=domains_list,
+                           super_domain = super_domain)
 
 
 @app.route('/<super_domain_url>/<domain_url>')
-def domain_view(super_domain_url, domain_url):
-    return render_template('journal-graph.html')
+def list_subdomains(super_domain_url, domain_url):
+    subdomains_list = get_functions.get_list_for_subdomains(super_domain_url, domain_url)
+    super_domain_name = get_functions.url_form_to_name(super_domain_url)
+    super_domain = {'name': super_domain_name, 'url': super_domain_url}
+    domain_name = get_functions.url_form_to_name(domain_url)
+    domain = {'name': domain_name, 'url': domain_url}
+    return render_template('subdomains-list.html',
+                           list_of = subdomains_list,
+                           super_domain = super_domain,
+                           domain = domain)
+
 
 @app.route('/<super_domain_url>/<domain_url>/<subdomain_url>')
 def subdomain_view(super_domain_url, domain_url, subdomain_url):
@@ -50,27 +49,51 @@ def subdomain_view(super_domain_url, domain_url, subdomain_url):
     super_domain_name = get_functions.url_form_to_name(super_domain_url)
     domain_name = get_functions.url_form_to_name(domain_url)
     subdomain_name = get_functions.url_form_to_name(subdomain_url)
-    return render_template('journal-graph.html')
+
+    super_domain = {'name': super_domain_name, 'url': super_domain_url}
+    domain = {'name': domain_name, 'url': domain_url}
+    subdomain = {'name': subdomain_name, 'url': subdomain_url}
+    if not (bool(super_domain_name) & bool(domain_name) & bool(subdomain_name)):
+        return render_template('404.html', text='Incorrect subdomain path')
+
+    journals = get_functions.get_list_for_journals(subdomain_name)
+
+    return render_template('journals-list.html',
+                            list_of = journals,
+                            super_domain = super_domain,
+                            domain = domain,
+                            subdomain = subdomain)
 
 
 
-@app.route('/<super_domain_url>/<domain_url>/<subdomain_url>/<journal_id>')
+@app.route('/<super_domain_url>/<domain_url>/<subdomain_url>/<int:journal_id>')
 def get_journal(super_domain_url, domain_url, subdomain_url, journal_id):
     # Получение имен
     super_domain_name = get_functions.url_form_to_name(super_domain_url)
     domain_name = get_functions.url_form_to_name(domain_url)
     subdomain_name = get_functions.url_form_to_name(subdomain_url)
+
+    # Проверка наличия такого пути
     if not (bool(super_domain_name) & bool(domain_name) & bool(subdomain_name)):
         return render_template('404.html', text='Incorrect journal path')
+    # Для формирования ссылок
+    super_domain = {'name': super_domain_name, 'url': super_domain_url}
+    domain = {'name': domain_name, 'url': domain_url}
+    subdomain = {'name': subdomain_name, 'url': subdomain_url}
+    
     
     result = get_functions.get_from_journal(journal_id)
     if result is None:
         return render_template('404.html', text='Incorrect journal id')
     output = result[0]
     journal_name = result[1]
-
+    journal = {'name': journal_name, 'url': journal_id}
     names = {'super_domain': super_domain_name, 'domain': domain_name, 'subdomain': subdomain_name, 'journal': journal_name}
     urls = {'super_domain': super_domain_url, 'domain': domain_url, 'subdomain': subdomain_url, 'journal': journal_id}
 
-    return render_template('journal-graph.html', output=output, names=names, urls=urls)
+    return render_template('journal-graph.html', output=output,
+                            super_domain = super_domain,
+                            domain = domain,
+                            subdomain = subdomain,
+                            journal = journal)
 

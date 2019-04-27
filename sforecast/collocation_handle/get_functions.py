@@ -27,7 +27,6 @@ def get_from_journal(journal_id):
     """
 
     output = from_journal_for_forecast(journal_id)  # форма для форкаста
-    print(output)
     if not output:
         return None
     df = output[0]
@@ -63,3 +62,66 @@ def url_form_to_name(domain_url):
                     return subdomain['name']
 
     return None
+
+def get_list_for_super_domains():
+    super_domain_list_total = db_adaptor.get_total_list_of_super_domains()
+    super_domain_list_availabe = db_adaptor.get_available_list_of_super_domains()
+    new_list = []
+    for super_domain in super_domain_list_total:
+        new_dict = {}
+        
+        for name in super_domain:
+            if name in super_domain_list_availabe:
+                new_dict['is available'] = True
+            else:
+                new_dict['is available'] = False
+            new_dict['name'] = name
+            new_dict['url'] = super_domain[name]
+        new_list.append(new_dict)
+
+    return new_list
+
+def get_list_for_domains(super_domain_url):
+    super_domain_name = url_form_to_name(super_domain_url)
+    domain_list_total = db_adaptor.get_total_list_of_domains(super_domain_url)
+    domain_list_availabe = db_adaptor.get_available_list_of_domains(super_domain_name)
+
+    new_list = []
+    for domain in domain_list_total:
+        new_dict = {}
+        
+        for name in domain:
+            if name in domain_list_availabe:
+                new_dict['is available'] = True
+            else:
+                new_dict['is available'] = False
+            new_dict['name'] = name
+            new_dict['url'] = domain[name]
+        new_list.append(new_dict)
+    return new_list
+
+def get_list_for_subdomains(super_domain_url, domain_url):
+    super_domain_name = url_form_to_name(super_domain_url)
+    domain_name = url_form_to_name(domain_url)
+    subdomain_list_total = db_adaptor.get_total_list_of_subdomains(super_domain_url, domain_url)
+    subdomain_list_availabe = db_adaptor.get_available_list_of_subdomains(domain_name)
+    new_list = []
+    for subdomain in subdomain_list_total:
+        new_dict = {}
+        
+        for name in subdomain:
+            if name in subdomain_list_availabe:
+                new_dict['is available'] = True
+            else:
+                new_dict['is available'] = False
+            new_dict['name'] = name
+            new_dict['url'] = subdomain[name]
+        new_list.append(new_dict)
+    return new_list
+
+def get_list_for_journals(subdomain_name):
+    journal_list = db_adaptor.get_available_list_of_journals(subdomain_name)
+    return journal_list
+
+def get_journal_name(journal_id):
+    return db_adaptor.get_journal_name(journal_id)

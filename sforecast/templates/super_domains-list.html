@@ -1,19 +1,12 @@
 {% extends "base.html"%}
 {% block title_text %}
-  <div>
-      <ol class="breadcrumb">
-        <li><a href="{{url_for('list_super_domains')}}">All primary domains</a></li>
-        <li class="active"><a href="{{url_for('list_domains', primary_domain_url=super_domain['url'])}}">{{super_domain['name']}}</a></li>
-      </ol>
-  </div>
   <div class="panel panel-default">
     <!-- Default panel contents -->
-    <div class="panel-heading lead">Выберите интересующий раздел</div>
+    <div class="panel-heading lead">Выберите интересующий основной раздел</div>
     <div class="panel-body">
-      <p>Активные ссылки имеют только обработанные на данный момент домены</p>
+      <p>Активные ссылки имеют только обработанные на данный момент основные домены</p>
   </div>
 {% endblock title_text %}
-
 {% block content %}
     <table class="table">
           <tbody>
@@ -21,7 +14,7 @@
               {% if loop.index % 3 == 1 %}
               <tr>
               {% endif %}
-                <td width="33%">{% if domain['is available'] %}<a href="{{url_for('list_subdomains', super_domain_url=super_domain['url'], domain_url = domain['url'])}}">{{domain['name']}}</a> {% else %}  {{domain['name']}} {% endif %}</td>
+                <td width="33%">{% if domain['is available'] %}<a href="{{url_for('list_domains', primary_domain_url=domain['url'])}}">{{domain['name']}}</a> {% else %}  {{domain['name']}} {% endif %}</td>
               {% if loop.last and loop.index % 3 == 1 %}
                 <td width="33%">&nbsp;</td>
                 <td width="33%">&nbsp;</td>
