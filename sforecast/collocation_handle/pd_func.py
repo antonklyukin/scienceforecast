@@ -10,6 +10,7 @@ def query_to_df(query_list):
     # Получение датафрейма из топ 5 словосочетаний разбитые по кварталам
     new_df.sort_values(by=['Collocation', 'Publication year', 'Publication quarter', 'records'], ascending=False, inplace=True)
     normalize_range_data_frame(new_df)
+    new_df = new_df[new_df['Publication year'] != 2019]
     return new_df
 
 def output_for_page (df):
@@ -29,13 +30,13 @@ def output_for_page (df):
     output_dict = {'years': df['Publication year'].sort_values().unique()}
     for collocation, year, records in zip(col_dict['Collocation'], col_dict['Publication year'], col_dict['records']):
         if collocation in output_dict:
-            
+            print(collocation,'     ', records)
             if year in output_dict[collocation]['years']:
                 ident = output_dict[collocation]['years'].index(year)
-                output_dict[collocation]['records'][ident] += records
+                output_dict[collocation]['records'][ident] += int(records)
             else:
                 output_dict[collocation]['years'].append(year)
-                output_dict[collocation]['records'].append(records)
+                output_dict[collocation]['records'].append(int(records))
 
         else:
             output_dict[collocation] = {'years': [year], 'records': [records]}
@@ -48,7 +49,7 @@ def output_for_page (df):
         output_dict[collocation]['records'].reverse()
         del output_dict[collocation]['years']
         i += 1
-
+    print(output_dict)
     return output_dict
 
 def normalize_range_data_frame(frame):

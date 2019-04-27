@@ -5,6 +5,8 @@ from . import support
 import os
 import json
 
+import pandas as pd
+
 
 def get_from_primary(primary_domain):
     """
@@ -29,9 +31,38 @@ def get_from_journal(journal_id):
     output = from_journal_for_forecast(journal_id)  # форма для форкаста
     if not output:
         return None
-    df = output[0]
+    df = output[0]  #
+    
     journal_name = output[1]
+    
+    # prediction block
+    for i in range(1, 5):
+        collocataions = df.Collocation.unique()
+        collocation_to_ts = {
+        collocation: pd.Series(
+            data=df.loc[df["Collocation"] == collocation, "records"].values,
+            index=df.loc[df["Collocation"] == collocation, "Publication year"]
+            ) for collocation in collocataions
+        }
+        for _, ts in collocation_to_ts.items():
+            ts.index = pd.to_datetime(ts.index)
+            ts.sort_index(inplace=True)
+        predictions = {collocation: ts[-8:].median()
+        for collocation, ts in collocation_to_ts.items()}
+
+        for predict in predictions:
+            dict_predict = {}
+            
+            dict_predict = {'Collocation': predict, 'Publication year': 2019,
+                        'Publication quarter': f'Q{i}',
+                        'records': predictions[predict]}
+            # print(dict_predict)
+            df = df.append(dict_predict, ignore_index=True)
+
+    df.sort_values(by= ['Collocation', 'Publication year'])
     dict_for_graphic = pd_func.output_for_page(df)
+    print(dict_for_graphic)
+
     return dict_for_graphic, journal_name
 
 def from_journal_for_forecast(journal_id):

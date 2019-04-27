@@ -8,12 +8,13 @@
         <li class="active"><a href="{{url_for('list_subdomains', super_domain_url=super_domain['url'], domain_url=domain['url'])}}">{{domain['name']}}</a></li>
       </ol>
   </div>
-    <div class="panel panel-default">
+  <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading lead">Выберите интересующий подраздел</div>
     <div class="panel-body">
       <p>Активные ссылки имеют только обработанные на данный момент поддомены</p>
-  </div>
+    </div>
+
 {% endblock title_text %}
 
 {% block content %}
@@ -39,4 +40,5 @@
             {% endfor %}
           </tbody>
         </table>
+        </div>
 {% endblock content %}
