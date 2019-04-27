@@ -60,16 +60,13 @@ def normalize_range_data_frame(frame):
     collocations = frame['Collocation'].unique()
     years = frame['Publication year'].unique()
     quarters = frame['Publication quarter'].unique()
-    print(frame['Collocation'])
-    print(collocations)
-    for collocation in collocations:
-        print(frame.loc[frame['Collocation'] == collocation])
     for collocation in collocations:
         for year in years:
             for quarter in quarters:
-                test_frame = frame.loc[(frame['Collocation'] == collocation) &
-                                   (frame['Publication year'] == year) &
-                                    (frame['Publication quarter'] == quarter)]
+                print('collocation   ', collocation, '   year   ', year, '  quarter     ', quarter)
+                test_frame = frame.loc[(frame['Collocation'].isin([collocation])) &
+                                   (frame['Publication year'].isin([year])) &
+                                    (frame['Publication quarter'].isin([quarter]))]
                 if test_frame.empty:
                     frame = frame.append({'Collocation': collocation,
                                           'Publication year': year,
