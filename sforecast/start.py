@@ -27,12 +27,17 @@ def list_domains(primary_domain_url):
             primary_domain_name = primary_domain_dict[primary_domain_url]
 
     list_of_domains = db_adaptor.get_total_list_of_domains(primary_domain_url)
-
+    list_of_available_domains = db_adaptor.get_available_list_of_domains(primary_domain_name)
+    for domain in list_of_domains:
+        if domain[0] in list_of_available_domains:
+            domain.append('Available')
+        else:
+            domain.append('Not Available')
 
     return render_template('domains-list.html',
                            primary_domain_name=primary_domain_name,
                            primary_domain_url=primary_domain_url,
-                           list_of_subdomains=list_of_domains)
+                           list_of_domains=list_of_domains)
 
 
 @app.route('/<super_domain_url>/<domain_url>')

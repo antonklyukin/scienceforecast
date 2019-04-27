@@ -4,6 +4,7 @@ import os
 
 from .settings import DB_SETTINGS
 
+
 def primary_select_collocations(name):
     """
     Функция для запроса статистики по супердомену выводит список из кортежей вида
